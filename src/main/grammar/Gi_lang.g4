@@ -2,11 +2,11 @@ grammar Gi_lang;
 
 prog: stat*;
 
-stat: read | print  |assign | assignArr;
+stat: read | print | stringConcat |assign | assignArr | assignString;
 
 assign: ID '=' expr0 ';';
 assignArr: ID '=' '{' ((INT|REAL)',')* (INT|REAL)? '}' ';';
-
+assignString: ID '=' STRING ';';
 
 //expr: value | add | sub | mul| div;
 expr0: expr1            #single0
@@ -23,7 +23,8 @@ expr2:   value
        | '(' expr0 ')'
 ;
 
-
+stringConcat: ID '=' stringValue ADD stringValue ';';
+stringValue: STRING|ID;
 //    | arrayExpr;
 
 value: ID | INT | REAL | arrValue;

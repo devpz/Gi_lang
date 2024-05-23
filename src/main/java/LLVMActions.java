@@ -27,7 +27,56 @@ public class LLVMActions extends Gi_langBaseListener {
         }
     }
 
+    @Override
+    public void exitAssignString(Gi_langParser.AssignStringContext ctx) {
+        String stringName = ctx.ID().getText();stringName.concat("asd");
+        String stringContent = ctx.STRING().getText();
+        stringContent = stringContent.substring(1,stringContent.length()-1);
+        int stringLengthWithNewLine = stringContent.length()+1;
+        stringContent = stringContent+"\\0A";
 
+        int stringPointer = LLVMGenerator.declare_string(stringLengthWithNewLine,stringName,stringContent);
+        strings.put(stringName,new StringType(String.valueOf(stringPointer),stringLengthWithNewLine,stringContent));
+    }
+
+    @Override
+    public void exitStringValue(Gi_langParser.StringValueContext ctx) {
+        if (ctx.ID() != null){
+            stack.push(new Value(ctx.ID().getText(), VarType.STRING));
+        }
+        if (ctx.STRING() != null){
+            String content = ctx.STRING().getText();
+            content = content.substring(1,content.length()-1);
+            int lengthWithNewLine = content.length()+1;
+            content = content+"\\0A";
+
+            String anonymousName = "anonymous" + LLVMGenerator.anonymousString;
+            LLVMGenerator.anonymousString++;
+
+            int stringPointer = LLVMGenerator.declare_string(lengthWithNewLine,anonymousName,content);
+            strings.put(anonymousName,new StringType(String.valueOf(stringPointer),lengthWithNewLine,content));
+            stack.push(new Value(anonymousName, VarType.STRING));
+        }
+    }
+
+    @Override
+    public void exitStringConcat(Gi_langParser.StringConcatContext ctx) {
+        String stringName = ctx.ID().getText();
+        if (strings.containsKey(stringName)){
+            error(ctx.getStart().getLine(),"String %s already defined".formatted(stringName));
+        }
+        Value value1 = stack.pop();
+        Value value2 = stack.pop();
+        StringType stringObj1 = strings.get(value1.name);
+        StringType stringObj2 = strings.get(value2.name);
+
+        int concatedLength = stringObj1.length + stringObj2.length - 1;
+        String concatedValue = stringObj1.content.substring(0, stringObj1.content.length() -3) + stringObj2.content;
+
+        int stringRegisterPointer = LLVMGenerator.declare_string(concatedLength, stringName, concatedValue);
+        strings.put(stringName, new StringType(String.valueOf(stringRegisterPointer),concatedLength, concatedValue));
+
+    }
 
     @Override
     public void exitArrValue(Gi_langParser.ArrValueContext ctx) {
