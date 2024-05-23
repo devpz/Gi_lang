@@ -1,0 +1,10 @@
+a = "a_tring1";
+b = "string2";
+call = 12;
+ball = 13;
+callBall = call + ball;
+print(callBall);
+print(a);
+print(b);
+c = a + b;
+print(c);
