@@ -32,8 +32,7 @@ public class LLVMActions extends Gi_langBaseListener {
         String stringName = ctx.ID().getText();stringName.concat("asd");
         String stringContent = ctx.STRING().getText();
         stringContent = stringContent.substring(1,stringContent.length()-1);
-        int stringLengthWithNewLine = stringContent.length()+1;
-        stringContent = stringContent+"\\0A";
+        int stringLengthWithNewLine = stringContent.length();
 
         int stringPointer = LLVMGenerator.declare_string(stringLengthWithNewLine,stringName,stringContent);
         strings.put(stringName,new StringType(String.valueOf(stringPointer),stringLengthWithNewLine,stringContent));
@@ -47,8 +46,7 @@ public class LLVMActions extends Gi_langBaseListener {
         if (ctx.STRING() != null){
             String content = ctx.STRING().getText();
             content = content.substring(1,content.length()-1);
-            int lengthWithNewLine = content.length()+1;
-            content = content+"\\0A";
+            int lengthWithNewLine = content.length();
 
             String anonymousName = "anonymous" + LLVMGenerator.anonymousString;
             LLVMGenerator.anonymousString++;
@@ -65,13 +63,13 @@ public class LLVMActions extends Gi_langBaseListener {
         if (strings.containsKey(stringName)){
             error(ctx.getStart().getLine(),"String %s already defined".formatted(stringName));
         }
-        Value value1 = stack.pop();
         Value value2 = stack.pop();
-        StringType stringObj1 = strings.get(value1.name);
+        Value value1 = stack.pop();
         StringType stringObj2 = strings.get(value2.name);
+        StringType stringObj1 = strings.get(value1.name);
 
-        int concatedLength = stringObj1.length + stringObj2.length - 1;
-        String concatedValue = stringObj1.content.substring(0, stringObj1.content.length() -3) + stringObj2.content;
+        int concatedLength = stringObj1.length + stringObj2.length;
+        String concatedValue = stringObj1.content + stringObj2.content;
 
         int stringRegisterPointer = LLVMGenerator.declare_string(concatedLength, stringName, concatedValue);
         strings.put(stringName, new StringType(String.valueOf(stringRegisterPointer),concatedLength, concatedValue));

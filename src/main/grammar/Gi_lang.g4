@@ -23,7 +23,7 @@ expr2:   value
        | '(' expr0 ')'
 ;
 
-stringConcat: ID '=' stringValue ADD stringValue ';';
+stringConcat: ID '=' stringValue '.concat(' stringValue ')' ';';
 stringValue: STRING|ID;
 //    | arrayExpr;
 

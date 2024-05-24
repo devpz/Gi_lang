@@ -1,10 +1,8 @@
-a = "a_tring1";
-b = "string2";
-call = 12;
-ball = 13;
-callBall = call + ball;
-print(callBall);
+a = "Hello ";
+b = "World!";
 print(a);
 print(b);
-c = a + b;
-print(c);
+aPlusb = a.concat(b);
+print(aPlusb);
+hi = "Hi ".concat("User!");
+print(hi);
