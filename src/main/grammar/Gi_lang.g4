@@ -2,7 +2,17 @@ grammar Gi_lang;
 
 prog: stat*;
 
-stat: read | print | stringConcat |assign | assignArr | assignString;
+stat: read | print | stringConcat |assign | assignArr | assignString | if;
+
+
+if: IF '(' equal ')' OPEN_BRACKET blockif CLOSE_BRACKET;
+
+equal: comparisonOperand '==' comparisonOperand;
+
+comparisonOperand: INT | REAL | ID;
+
+blockif: stat*;
+
 
 assign: ID '=' expr0 ';';
 assignArr: ID '=' '{' ((INT|REAL)',')* (INT|REAL)? '}' ';';
@@ -45,8 +55,13 @@ MUL: '*';
 DIV: '/';
 
 PRINT: 'print';
+END_STAT: ';';
 READ: 'read';
 INT: [0-9]+;
+IF: 'if';
+FOR: 'for';
+OPEN_BRACKET: '{';
+CLOSE_BRACKET: '}';
 REAL: INT '.' INT;
 STRING :  '"' ( ~('\\'|'"') )* '"';
 ID: [a-zA-Z0-9]+;

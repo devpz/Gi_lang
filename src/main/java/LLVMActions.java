@@ -6,11 +6,26 @@ import types.VarType;
 import java.util.HashMap;
 import java.util.Stack;
 
+
+
 public class LLVMActions extends Gi_langBaseListener {
     HashMap<String, VarType> variables = new HashMap<>();
     HashMap<String, ArrayType> arrays = new HashMap<>();
     HashMap<String, StringType> strings = new HashMap<>();
     Stack<Value> stack = new Stack<>();
+
+
+    @Override
+    public void enterBlockif(Gi_langParser.BlockifContext ctx) {
+        LLVMGenerator.ifstart();
+    }
+
+    @Override
+    public void exitBlockif(Gi_langParser.BlockifContext ctx) {
+        LLVMGenerator.ifend();
+    }
+
+
 
     @Override
     public void exitValue(Gi_langParser.ValueContext ctx) {

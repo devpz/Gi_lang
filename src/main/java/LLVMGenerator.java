@@ -1,9 +1,65 @@
+import java.util.Stack;
+
 public class LLVMGenerator {
     static String header_text = "";
     static String header_top = "";
     static String main_text = "";
     static int register = 1;
     static int anonymousString = 0;
+
+    static int label = 0;
+
+    static Stack<Integer> labelStack = new Stack<Integer>();
+
+    static void ifstart(){
+        label++;
+        // Ensure that the condition register is correctly typed as i1
+        main_text += "%cond" + label + " = icmp ne i32 %"+(register-1)+", 0\n"; // Assuming register-1 holds an i32 value
+        main_text += "br i1 %cond"+ label +", label %true"+ label +", label %false"+ label +"\n";
+        main_text += "true"+ label +":\n";
+        labelStack.push(label);
+    }
+    static void ifend(){
+        int b = labelStack.pop();
+        main_text += "br label %false"+b+"\n";
+        main_text += "false"+b+":\n";
+    }
+    static void icmp_int(String v1, String v2){
+        main_text += "%"+register+" = icmp eq i32 "+v1+", "+v2+"\n";
+        register++;
+    }
+    static void repeatstart(String repetitions){
+        declare_int(Integer.toString(register));
+        int counter = register;
+        register++;
+        assign_int(Integer.toString(counter), "0");
+        label++;
+        main_text += "br label %cond"+ label +"\n";
+        main_text += "cond"+ label +":\n";
+
+        load_int(Integer.toString(counter));
+        add_int("%"+(register-1), "1");
+        assign_int(Integer.toString(counter), "%"+(register-1));
+
+        main_text += "%"+register+" = icmp slt i32 %"+(register-2)+", "+repetitions+"\n";
+        register++;
+
+        main_text += "br i1 %"+(register-1)+", label %true"+ label +", label %false"+ label +"\n";
+        main_text += "true"+ label +":\n";
+        labelStack.push(label);
+    }
+
+    static void repeatend(){
+        int b = labelStack.pop();
+        main_text += "br label %cond"+b+"\n";
+        main_text += "false"+b+":\n";
+    }
+
+    static void icmp_double(String v1, String v2){
+        main_text += "%"+register+" = fcmp oeq double "+v1+", "+v2+"\n";
+        register++;
+
+    }
 
     static void declare_int(String id){
         main_text += "%"+id+" = alloca i32\n";

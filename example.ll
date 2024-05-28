@@ -25,21 +25,32 @@ call void @llvm.memcpy.p0i8.p0i8.i64(i8* %4, i8* align 1 getelementptr inbounds 
 %6 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strps, i32 0, i32 0), i8* %5)
 %7 = getelementptr inbounds [7 x i8], [7 x i8]* %3, i32 0, i32 0
 %8 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strps, i32 0, i32 0), i8* %7)
-%9 = alloca [13 x i8]
-%10 = bitcast [13 x i8]* %9 to i8*
-call void @llvm.memcpy.p0i8.p0i8.i64(i8* %10, i8* align 1 getelementptr inbounds ([13 x i8], [13 x i8]* @__const.main.aPlusb, i32 0, i32 0), i64 13, i1 false)
-%11 = getelementptr inbounds [13 x i8], [13 x i8]* %9, i32 0, i32 0
-%12 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strps, i32 0, i32 0), i8* %11)
-%13 = alloca [4 x i8]
-%14 = bitcast [4 x i8]* %13 to i8*
-call void @llvm.memcpy.p0i8.p0i8.i64(i8* %14, i8* align 1 getelementptr inbounds ([4 x i8], [4 x i8]* @__const.main.anonymous0, i32 0, i32 0), i64 4, i1 false)
-%15 = alloca [6 x i8]
-%16 = bitcast [6 x i8]* %15 to i8*
-call void @llvm.memcpy.p0i8.p0i8.i64(i8* %16, i8* align 1 getelementptr inbounds ([6 x i8], [6 x i8]* @__const.main.anonymous1, i32 0, i32 0), i64 6, i1 false)
-%17 = alloca [9 x i8]
-%18 = bitcast [9 x i8]* %17 to i8*
-call void @llvm.memcpy.p0i8.p0i8.i64(i8* %18, i8* align 1 getelementptr inbounds ([9 x i8], [9 x i8]* @__const.main.hi, i32 0, i32 0), i64 9, i1 false)
-%19 = getelementptr inbounds [9 x i8], [9 x i8]* %17, i32 0, i32 0
-%20 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strps, i32 0, i32 0), i8* %19)
+%z = alloca i32
+store i32 30, i32* %z
+%x = alloca i32
+store i32 10, i32* %x
+%cond1 = icmp ne i32 %8, 0
+br i1 %cond1, label %true1, label %false1
+true1:
+%9 = load i32, i32* %z
+%10 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strpi, i32 0, i32 0), i32 %9)
+br label %false1
+false1:
+%11 = alloca [13 x i8]
+%12 = bitcast [13 x i8]* %11 to i8*
+call void @llvm.memcpy.p0i8.p0i8.i64(i8* %12, i8* align 1 getelementptr inbounds ([13 x i8], [13 x i8]* @__const.main.aPlusb, i32 0, i32 0), i64 13, i1 false)
+%13 = getelementptr inbounds [13 x i8], [13 x i8]* %11, i32 0, i32 0
+%14 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strps, i32 0, i32 0), i8* %13)
+%15 = alloca [4 x i8]
+%16 = bitcast [4 x i8]* %15 to i8*
+call void @llvm.memcpy.p0i8.p0i8.i64(i8* %16, i8* align 1 getelementptr inbounds ([4 x i8], [4 x i8]* @__const.main.anonymous0, i32 0, i32 0), i64 4, i1 false)
+%17 = alloca [6 x i8]
+%18 = bitcast [6 x i8]* %17 to i8*
+call void @llvm.memcpy.p0i8.p0i8.i64(i8* %18, i8* align 1 getelementptr inbounds ([6 x i8], [6 x i8]* @__const.main.anonymous1, i32 0, i32 0), i64 6, i1 false)
+%19 = alloca [9 x i8]
+%20 = bitcast [9 x i8]* %19 to i8*
+call void @llvm.memcpy.p0i8.p0i8.i64(i8* %20, i8* align 1 getelementptr inbounds ([9 x i8], [9 x i8]* @__const.main.hi, i32 0, i32 0), i64 9, i1 false)
+%21 = getelementptr inbounds [9 x i8], [9 x i8]* %19, i32 0, i32 0
+%22 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @strps, i32 0, i32 0), i8* %21)
 ret i32 0 }
 

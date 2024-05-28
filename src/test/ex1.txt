@@ -2,6 +2,11 @@ a = "Hello ";
 b = "World!";
 print(a);
 print(b);
+z = 30;
+x = 10;
+if (x == 10) {
+    print(z);
+}
 aPlusb = a.concat(b);
 print(aPlusb);
 hi = "Hi ".concat("User!");
