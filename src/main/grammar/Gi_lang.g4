@@ -5,13 +5,15 @@ prog: stat*;
 stat: read | print | stringConcat |assign | assignArr | assignString | if;
 
 
-if: IF '(' equal ')' OPEN_BRACKET blockif CLOSE_BRACKET;
+if: IF '(' ifCondition ')' OPEN_BRACKET blockif CLOSE_BRACKET;
 
-equal: comparisonOperand '==' comparisonOperand;
+ifCondition: value condition value;
 
 comparisonOperand: INT | REAL | ID;
 
 blockif: stat*;
+
+condition: (EQUAL | NOT_EQUAL | GREATER_EQ | LESSER_EQ | GREATER | LESSER);
 
 
 assign: ID '=' expr0 ';';
@@ -59,6 +61,13 @@ END_STAT: ';';
 READ: 'read';
 INT: [0-9]+;
 IF: 'if';
+EQUAL: '==';
+NOT_EQUAL: '!=';
+GREATER_EQ: '>=';
+LESSER_EQ: '<=';
+GREATER: '>';
+LESSER: '<';
+
 FOR: 'for';
 OPEN_BRACKET: '{';
 CLOSE_BRACKET: '}';

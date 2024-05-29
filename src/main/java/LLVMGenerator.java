@@ -6,16 +6,14 @@ public class LLVMGenerator {
     static String main_text = "";
     static int register = 1;
     static int anonymousString = 0;
-
     static int label = 0;
+    static Stack<Integer> labelStack = new Stack<>();
 
-    static Stack<Integer> labelStack = new Stack<Integer>();
+
 
     static void ifstart(){
         label++;
-        // Ensure that the condition register is correctly typed as i1
-        main_text += "%cond" + label + " = icmp ne i32 %"+(register-1)+", 0\n"; // Assuming register-1 holds an i32 value
-        main_text += "br i1 %cond"+ label +", label %true"+ label +", label %false"+ label +"\n";
+        main_text += "br i1 %"+(register-1)+", label %true"+ label +", label %false"+ label +"\n";
         main_text += "true"+ label +":\n";
         labelStack.push(label);
     }
@@ -24,8 +22,17 @@ public class LLVMGenerator {
         main_text += "br label %false"+b+"\n";
         main_text += "false"+b+":\n";
     }
-    static void icmp_int(String v1, String v2){
-        main_text += "%"+register+" = icmp eq i32 "+v1+", "+v2+"\n";
+    static void icmp_int(String v1, String v2, String cond){
+        String sign = switch (cond){
+            case ("==") -> "eq";
+            case ("!=") -> "ne";
+            case ("<=") -> "ule";
+            case (">=") -> "uge";
+            case ("<") -> "ult";
+            case (">") -> "ugt";
+            default -> "";
+        };
+        main_text += "%"+register+" = icmp "+ sign +" i32 "+v1+", "+v2+"\n";
         register++;
     }
     static void repeatstart(String repetitions){
@@ -55,8 +62,17 @@ public class LLVMGenerator {
         main_text += "false"+b+":\n";
     }
 
-    static void icmp_double(String v1, String v2){
-        main_text += "%"+register+" = fcmp oeq double "+v1+", "+v2+"\n";
+    static void icmp_double(String v1, String v2, String cond){
+        String sign = switch (cond){
+            case ("==") -> "oeq";
+            case ("!=") -> "one";
+            case ("<=") -> "ole";
+            case (">=") -> "oge";
+            case ("<") -> "olt";
+            case (">") -> "ogt";
+            default -> "";
+        };
+        main_text += "%"+register+" = fcmp "+sign+" double "+v1+", "+v2+"\n";
         register++;
 
     }

@@ -14,16 +14,44 @@ public class LLVMActions extends Gi_langBaseListener {
     HashMap<String, StringType> strings = new HashMap<>();
     Stack<Value> stack = new Stack<>();
 
+    HashMap<String, VarType> globalVariables = new HashMap<>();
+    HashMap<String, VarType> localVariables = new HashMap<>();
+    HashMap<String, VarType> localVariablesMapped = new HashMap<>();
+
+
+
+
 
     @Override
     public void enterBlockif(Gi_langParser.BlockifContext ctx) {
         LLVMGenerator.ifstart();
     }
 
+    public void exitIfCondition(Gi_langParser.IfConditionContext ctx) {
+        Value v2 = getValue();
+        Value v1 = getValue();
+        String condition = ctx.condition().getText();
+
+        if (v1.varType == v2.varType) {
+            if (v1.varType == VarType.INT) {
+                LLVMGenerator.icmp_int(v1.name, v2.name, condition);
+            }
+            if (v1.varType == VarType.REAL) {
+                LLVMGenerator.icmp_double(v1.name, v2.name, condition);
+            }
+        } else {
+            error(ctx.getStart().getLine(), "IF statement type mismatch");
+        }
+    }
+
+
+
     @Override
     public void exitBlockif(Gi_langParser.BlockifContext ctx) {
         LLVMGenerator.ifend();
     }
+
+
 
 
 
@@ -36,15 +64,17 @@ public class LLVMActions extends Gi_langBaseListener {
         else if (ctx.ID() != null) {
             stack.push(new Value(ctx.ID().getText(), VarType.ID));
             if (strings.containsKey(ctx.ID().getText()))
-                stack.push(new Value(ctx.ID().getText(),VarType.STRING));
+                stack.push(new Value(ctx.ID().getText(), VarType.STRING));
             else if (!variables.containsKey(ctx.ID().getText()))
                 error(ctx.getStart().getLine(), "Undeclared variable");
         }
     }
 
+
     @Override
     public void exitAssignString(Gi_langParser.AssignStringContext ctx) {
-        String stringName = ctx.ID().getText();stringName.concat("asd");
+        String stringName = ctx.ID().getText();
+        stringName.concat("asd");
         String stringContent = ctx.STRING().getText();
         stringContent = stringContent.substring(1,stringContent.length()-1);
         int stringLengthWithNewLine = stringContent.length();
